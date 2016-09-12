@@ -1,6 +1,6 @@
 {
   "name": "react-user-input",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Form factory for react applications. Suports format checking, conversion and inline editing",
   "main": "index.js",
   "repository": {
@@ -9,7 +9,8 @@
   },
   "scripts": {
     "watch:demo": "watchify demo.js -o dist/demo.dev.js -dv -p [ parcelify -wo dist/style.css ]",
-    "build": "browserify index.js -o dist/index.dev.js -p [ parcelify -o dist/style.css ]"
+    "build": "browserify index.js -o dist/index.dev.js -p [ parcelify -o dist/style.css ]",
+    "postinstall" : "npm run build"
   },
   "style": [
     "style.css",
@@ -20,7 +21,7 @@
     "lodash": "^4.15.0",
     "moment": "^2.14.1",
     "numeral": "^1.5.3",
-    "parcelify": "^2.1.0",
+    "parcelify": "^2.2.0",
     "react": "^15.3.0",
     "react-dom": "^15.3.0",
     "react-datepicker": "^0.29.0"
