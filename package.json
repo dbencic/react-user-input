@@ -1,0 +1,50 @@
+{
+  "name": "react-user-input",
+  "version": "1.0.0",
+  "description": "Form factory for react applications. Suports format checking, conversion and inline editing",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dbencic/react-user-input.git"
+  },
+  "scripts": {
+    "watch:demo": "watchify demo.js -o dist/demo.dev.js -dv -p [ parcelify -wo dist/style.css ]",
+    "build": "browserify index.js -o dist/index.dev.js -p [ parcelify -o dist/style.css ]"
+  },
+  "style": [
+    "style.css",
+    "node_modules/react-datepicker/dist/react-datepicker.css"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "lodash": "^4.15.0",
+    "moment": "^2.14.1",
+    "numeral": "^1.5.3",
+    "parcelify": "^2.1.0",
+    "react": "^15.3.0",
+    "react-dom": "^15.3.0",
+    "react-datepicker": "^0.29.0"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-react": "^6.11.1",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.0",
+    "watchify": "^3.7.0"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015",
+            "react"
+          ]
+        }
+      ]
+    ]
+  },
+  "author": "dragan.bencic@gmail.com",
+  "license": "ISC"
+}
