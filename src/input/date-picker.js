@@ -60,7 +60,8 @@ class DatePickerInput extends Component {
                     dateFormat="DD.MM.YYYY" ref="input" selected={this.state.value}
                     className={this.getInputClassName()} onBlur={(e)=>this.onBlurRoutine(e)} {...disabled}/>
                     <div className="input-group-addon">
-                        <StatusIcon error={this.state.error} onClicked={()=>this.onStatusIconClicked()}/>
+                        <StatusIcon error={this.state.error} onClicked={()=>this.onStatusIconClicked()}
+                            value={this.state.value} mandatory={this.props.mandatory}/>
                     </div>
                 </div>);
         

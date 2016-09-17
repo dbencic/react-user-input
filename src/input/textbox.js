@@ -56,7 +56,8 @@ class TextBox extends Component {
                                 onKeyPress={(e)=>this.onKeyPressRoutine(e)} onKeyDown={(e)=>this.onKeyDownRoutine(e)}/>
 
                     <div className="input-group-addon">
-                        <StatusIcon error={this.state.error} onClicked={()=>this.onStatusIconClicked()}/>
+                        <StatusIcon error={this.state.error} onClicked={()=>this.onStatusIconClicked()}
+                            value={this.state.value} mandatory={this.props.mandatory}/>
                     </div>
 
                 </div>);

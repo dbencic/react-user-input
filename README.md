@@ -16,7 +16,12 @@ NOTE: I havent built all imput components, just the ones I've needed this far
 
 ```
 #!javascript
-import {parsers, inline, input} from "react-formy";
+import {input, parsers, FormGroup} from "react-user-input";
+
+var formData = new input.FormData(value, (value, field)=>{
+    console.log("Value changed for field: %s, new value is:", field);
+    console.log(value);
+});
 var widget = <FormGroup label="Select box demo">
                 <input.Select options={{"": "---", 1: "One", 2: "Two"}}
                     valueParser={parsers.int} {...formData.field("select", true)}/>

@@ -9,13 +9,13 @@
 
 let floatCheckRegex = /^[+]?\d*[\.,]?[\d]+$/;
 let intCheckRegex = /^[+,-]?[0-9]+$/;
-let emailRegex=/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
+let emailRegex = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
 
 function floatParser(value) {
 	value = value.trim();
-	if (!value) return value;//value is not defined
-	let floatnum = value.match(floatCheckRegex);//if there is no match result is null
-	if (!floatnum) return null;//value is in wrong format
+	if (!value) return value; //value is not defined
+	let floatnum = value.match(floatCheckRegex); //if there is no match result is null
+	if (!floatnum) return null; //value is in wrong format
 	value = value.replace(",", ".");
 	return parseFloat(value);
 }
@@ -39,9 +39,19 @@ function genericParser(value) {
 	return value;
 }
 
+//trim if value is empty
+function trim(value) {
+	if (value !== null && value != null && value.trim) {
+		return value.trim();
+	}
+	return value;
+}
+
 export default {
 	float: floatParser,
 	int: intParser,
 	email: emailParser,
-	generic: genericParser
+	generic: genericParser,
+	raw: genericParser,
+	trim: trim
 }

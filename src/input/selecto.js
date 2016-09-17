@@ -70,7 +70,8 @@ class Selecto extends Component {
                             onChange={(e)=>this.moreOptionsClicked(e.target.checked)}/> {(this.props.moreOptionsLabel || "More options")}
                     </div>
                     <div className="input-group-addon">
-                        <StatusIcon error={this.state.error} onClicked={()=>this.onStatusIconClicked()}/>
+                        <StatusIcon error={this.state.error} onClicked={()=>this.onStatusIconClicked()}
+                            value={this.state.value} mandatory={this.props.mandatory}/>
                     </div>
                     
                 </div>);

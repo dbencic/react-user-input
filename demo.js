@@ -8,13 +8,6 @@ import ReactDOM from "react-dom";
 import numeral from "numeral";
 import moment from "moment";
 
-/*
-	<FormGroup label="INLINE Select box demo">
-				<inline.Select options={{"": "---", 1: "Jedan", 2: "Dva"}} valueParser={parsers.int} value={1} 
-					onChange={(value)=>console.log("new InlineSelect Select value is: " + value)} mandatory={true}
-						displayModeClassName="btn btn-default"/>
-			</FormGroup>
-*/
 var value = {
     select: 2,
     selectDisabled: 2,
@@ -64,6 +57,9 @@ var widget = (<form className="form">
 			<FormGroup label="text box with number demo">
 				<input.TextBox valueParser={parsers.int} {...formData.field("textboxWithNumber", true)} />
 			</FormGroup>
+            <FormGroup label="Non mandatory textbox">
+                <input.TextBox valueParser={parsers.trim} {...formData.field("nonMandatoryTextbox", false)} />
+            </FormGroup>
 			<FormGroup label="text box with email demo">
 				<input.TextBox valueParser={parsers.email} {...formData.field("textboxWithEmail", true)} />
 			</FormGroup>
@@ -74,10 +70,6 @@ var widget = (<form className="form">
 		</form>
 );
 
-
-//<FormBootstrapItem label="Text area demo" name="textarea">
-//    <input.TextArea valueParser={parsers.raw} mandatory={true}  rows={4} />
-//</FormBootstrapItem>
 
 ReactDOM.render(widget, document.getElementById("container"));
 

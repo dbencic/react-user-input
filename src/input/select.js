@@ -57,7 +57,8 @@ class Select extends Component {
                     </select>
 
                     <div className="input-group-addon">
-                        <StatusIcon error={this.state.error} onClicked={()=>this.onStatusIconClicked()}/>
+                        <StatusIcon error={this.state.error} onClicked={()=>this.onStatusIconClicked()}
+                            value={this.state.value} mandatory={this.props.mandatory}/>
                     </div>
 
                 </div>);

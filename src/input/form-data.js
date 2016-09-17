@@ -18,7 +18,7 @@ function FormData(value = {}, changeListener = (newValue, changedFieldName)=>{})
     this.changeHandler = function(fieldName) {
         return function(newFieldValue) {
             this.value[fieldName] = newFieldValue;
-            this.changeListener(this.getValue(), fieldName);
+            this.changeListener(this.value, fieldName);
         }.bind(this);
     };
 
@@ -43,7 +43,7 @@ function FormData(value = {}, changeListener = (newValue, changedFieldName)=>{})
         for (let i=0; i<this.mandatoryFields.length && verify; i++) {
             if (!this.value[this.mandatoryFields[i]]) return null;
         }
-        return value;
+        return this.value;
     };
 }
 
