@@ -16,7 +16,9 @@ var value = {
     preformatted: "Some readonly preformatted value\nText in new line",
     selecto: "tri",
     textboxWithNumber: 9,
-    datevalue: new Date()
+    datevalue: new Date(),
+    nonMandatoryTextbox: null,
+    textarea: null
 };
 
 var formData = new input.FormData(value, (v, f)=>{
@@ -26,7 +28,7 @@ var formData = new input.FormData(value, (v, f)=>{
 
 var widget = (<form className="form">
 			<FormGroup label="Select box demo">
-				<input.Select options={{"": "---", 1: "Jedan", 2: "Dva"}}
+				<input.Select options={{1: "Jedan", 2: "Dva"}}
                     valueParser={parsers.int} {...formData.field("select", true)}/>
 			</FormGroup>
 			<FormGroup label="DISABLED Select box demo">
@@ -45,7 +47,7 @@ var widget = (<form className="form">
                     onClick={()=>console.log("Preformatted value clicked!")}/>
 			</FormGroup>
 			<FormGroup label="SelectO box demo">
-				<input.Selecto options={{"": "---", "jedan": "Jedan", "dva": "Dva"}} moreOptions={{"tri": "Tri", "cetiri": "Četiri"}} 
+				<input.Selecto options={{"jedan": "Jedan", "dva": "Dva"}} moreOptions={{"tri": "Tri", "cetiri": "Četiri"}} 
 					valueParser={parsers.raw} {...formData.field("selecto", true)} moreOptionsLabel="Napredno"/>
 			</FormGroup>
 			<FormGroup label="DatePicker monent value demo">

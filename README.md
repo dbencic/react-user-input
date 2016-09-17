@@ -6,7 +6,7 @@
 General idea is to manage input validation for various types of input: data conversion, plus handling changes and populating values. Suports input format and value validation. It has 2 main components:
 
 - inputs: input components like textbox, or select box
-- parsers: functions that takes text as an argument (text comes from input element) and than parses this text into correct data format, ex int, or float
+- parsers: functions that takes text as an argument (text comes from input element) and than parses this text into correct data format, ex int, or float. If data is not parsable should return parsers.nonParsableValue
 
 NOTE: I havent built all imput components, just the ones I've needed this far
 

@@ -1,7 +1,7 @@
 import React,{Component} from "react";
 import ReactDOM from "react-dom";
 import StatusIcon from "./status-icon";
-// import InputComponent from "./input-component";
+import parsers from "../parsers";
 
 class Selecto extends Component {
 
@@ -15,7 +15,7 @@ class Selecto extends Component {
     }
 
     getIsError(value, mandatory) {
-        return (value === null) || (!value && mandatory);
+        return parsers.haveParsingFailed(value) || (!value && mandatory);
     }
 
     getShowMoreOptions(value, moreOptions) {
@@ -33,9 +33,10 @@ class Selecto extends Component {
     }
 
     getStateFromProps(props) {
+        var v = props.value || "";
         return Object.assign({
-            initialValue: props.value,
-        }, this.getStateFromValues(props.value, props.value, props.moreOptions, props.mandatory));
+            initialValue: v,
+        }, this.getStateFromValues(v, v, props.moreOptions, props.mandatory));
     }
 
     getInputClassName() {
@@ -54,6 +55,7 @@ class Selecto extends Component {
         if (this.state.showMoreOptions){
             opts = Object.assign(opts, this.props.moreOptions);
         }
+        if (Object.getOwnPropertyNames(opts).find((o)=>!o) !== "") opts = Object.assign({"":"-"}, opts);
         var options = Object.getOwnPropertyNames(opts).map((o)=>{
             return (<option key={o} value={o}>{opts[o]}</option>);
         });
@@ -65,11 +67,11 @@ class Selecto extends Component {
                                 onKeyPress={(e)=>this.onKeyPressRoutine(e)} onKeyDown={(e)=>this.onKeyDownRoutine(e)}>
                         {options}
                     </select>
-                    <div className="input-group-addon">
+                    <div className="formy-addon input-group-addon">
                         <input type="checkbox" {...checked} {...disabled}
                             onChange={(e)=>this.moreOptionsClicked(e.target.checked)}/> {(this.props.moreOptionsLabel || "More options")}
                     </div>
-                    <div className="input-group-addon">
+                    <div className="formy-addon input-group-addon">
                         <StatusIcon error={this.state.error} onClicked={()=>this.onStatusIconClicked()}
                             value={this.state.value} mandatory={this.props.mandatory}/>
                     </div>

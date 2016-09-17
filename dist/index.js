@@ -43160,7 +43160,7 @@ var TextBox = function (_Component) {
         value: function getStateFromProps(props) {
             return Object.assign({
                 initialValue: props.value
-            }, this.getStateFromValues(props.value, props.value, props.mandatory));
+            }, this.getStateFromValues(props.value || "", props.value || "", props.mandatory));
         }
     }, {
         key: "getInputClassName",

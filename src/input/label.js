@@ -19,7 +19,7 @@ class Label extends Component {
         var onclick = this.props.onClick || (()=>{});
         return (<div className="input-group" onClick={(e)=>onclick()}>
                         <div {...styles}>{this.valueProvider(this.props.value)}</div>
-                        <div className="input-group-addon">
+                        <div className="formy-addon input-group-addon">
                             {addon}
                         </div>
                     </div>);

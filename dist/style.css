@@ -10,7 +10,7 @@
 	border: 1px solid red;
 }
 
-.input-group-addon {
+.formy-addon.input-group-addon {
     background-color: inherit;
     border: 0;
 }

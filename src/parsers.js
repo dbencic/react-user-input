@@ -11,11 +11,16 @@ let floatCheckRegex = /^[+]?\d*[\.,]?[\d]+$/;
 let intCheckRegex = /^[+,-]?[0-9]+$/;
 let emailRegex = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
 
+//value returned in case that value to parse is invalid
+let nonParsableValue = {
+	dummyMember: false
+};
+
 function floatParser(value) {
 	value = value.trim();
 	if (!value) return value; //value is not defined
 	let floatnum = value.match(floatCheckRegex); //if there is no match result is null
-	if (!floatnum) return null; //value is in wrong format
+	if (!floatnum) return nonParsableValue; //value is in wrong format
 	value = value.replace(",", ".");
 	return parseFloat(value);
 }
@@ -23,14 +28,14 @@ function floatParser(value) {
 function intParser(value) {
 	value = value.trim();
 	if (!value) return value;
-	if (!intCheckRegex.test(value)) return null;
+	if (!intCheckRegex.test(value)) return nonParsableValue;
 	return parseInt(value);
 }
 
 function emailParser(value) {
 	value = value.trim();
 	if (!value) return value;
-	if (!emailRegex.test(value)) return null;
+	if (!emailRegex.test(value)) return nonParsableValue;
 	return value;
 }
 
@@ -47,11 +52,17 @@ function trim(value) {
 	return value;
 }
 
+function haveParsingFailed(value) {
+	return (value === nonParsableValue);
+};
+
 export default {
 	float: floatParser,
 	int: intParser,
 	email: emailParser,
 	generic: genericParser,
 	raw: genericParser,
-	trim: trim
-}
+	trim: trim,
+	nonParsableValue: nonParsableValue,
+	haveParsingFailed: haveParsingFailed
+};

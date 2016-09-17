@@ -1,6 +1,7 @@
 import React,{Component} from "react";
 import ReactDOM from "react-dom";
 import StatusIcon from "./status-icon";
+import parsers from "../parsers";
 
 class Select extends Component {
 
@@ -14,7 +15,7 @@ class Select extends Component {
     }
 
     getIsError(value, mandatory) {
-        return (value === null) || (!value && mandatory);
+        return parsers.haveParsingFailed(value) || (!value && mandatory);
     }
 
     getStateFromValues(rawValue, value, mandatory) {
@@ -26,9 +27,10 @@ class Select extends Component {
     }
 
     getStateFromProps(props) {
+        var v = props.value || "";
         return Object.assign({
-            initialValue: props.value
-        }, this.getStateFromValues(props.value, props.value, props.mandatory));
+            initialValue: v
+        }, this.getStateFromValues(v, v, props.mandatory));
     }
 
     getInputClassName() {
@@ -44,6 +46,7 @@ class Select extends Component {
 
     render() {
         var opts = Object.assign({}, this.props.options);//shallow clone
+        if (Object.getOwnPropertyNames(opts).find((o)=>!o) !== "") opts = Object.assign({"":"-"}, opts);
         var options = Object.getOwnPropertyNames(opts).map((o)=>{
             return (<option key={o} value={o}>{opts[o]}</option>);
         });
@@ -56,7 +59,7 @@ class Select extends Component {
                         {options}
                     </select>
 
-                    <div className="input-group-addon">
+                    <div className="input-group-addon formy-addon">
                         <StatusIcon error={this.state.error} onClicked={()=>this.onStatusIconClicked()}
                             value={this.state.value} mandatory={this.props.mandatory}/>
                     </div>

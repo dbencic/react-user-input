@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import StatusIcon from "./status-icon";
 import DatePicker from "react-datepicker";
 import moment from "moment";
+import parsers from "../parsers";
 import _ from "lodash";
 
 class DatePickerInput extends Component {
@@ -25,7 +26,7 @@ class DatePickerInput extends Component {
     }
 
     getIsError(value, mandatory) {
-        return (value === null) || (!value && mandatory);
+        return parsers.haveParsingFailed(value) || (!value && mandatory);
     }
 
     getStateFromValues(value, mandatory) {
@@ -59,7 +60,7 @@ class DatePickerInput extends Component {
                 <DatePicker selected={this.state.value} onChange={(value)=>this.onChangeRoutine(value)}
                     dateFormat="DD.MM.YYYY" ref="input" selected={this.state.value}
                     className={this.getInputClassName()} onBlur={(e)=>this.onBlurRoutine(e)} {...disabled}/>
-                    <div className="input-group-addon">
+                    <div className="formy-addon input-group-addon">
                         <StatusIcon error={this.state.error} onClicked={()=>this.onStatusIconClicked()}
                             value={this.state.value} mandatory={this.props.mandatory}/>
                     </div>

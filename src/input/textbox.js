@@ -1,7 +1,7 @@
 import React,{Component} from "react";
 import ReactDOM from "react-dom";
 import StatusIcon from "./status-icon";
-// import InputComponent from "./input-component";
+import parsers from "../parsers";
 
 class TextBox extends Component {
 
@@ -15,7 +15,7 @@ class TextBox extends Component {
     }
 
     getIsError(value, mandatory) {
-        return (value === null) || (!value && mandatory);
+        return parsers.haveParsingFailed(value) || (!value && mandatory);
     }
 
     getStateFromValues(rawValue, value, mandatory) {
@@ -27,9 +27,10 @@ class TextBox extends Component {
     }
 
     getStateFromProps(props) {
+        var v = props.value || "";
         return Object.assign({
-            initialValue: props.value
-        }, this.getStateFromValues(props.value, props.value, props.mandatory));
+            initialValue: v
+        }, this.getStateFromValues(v, v, props.mandatory));
     }
 
     getInputClassName() {
@@ -55,7 +56,7 @@ class TextBox extends Component {
                         onChange={(e)=>this.onChangeRoutine(e)} onBlur={(e)=>this.onBlurRoutine(e)}
                                 onKeyPress={(e)=>this.onKeyPressRoutine(e)} onKeyDown={(e)=>this.onKeyDownRoutine(e)}/>
 
-                    <div className="input-group-addon">
+                    <div className="formy-addon input-group-addon">
                         <StatusIcon error={this.state.error} onClicked={()=>this.onStatusIconClicked()}
                             value={this.state.value} mandatory={this.props.mandatory}/>
                     </div>
