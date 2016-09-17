@@ -1,6 +1,5 @@
 node_modules/
-dist/*.js
-dist/*.css
+dist/*.dev.js
 .DS_Store
 npm-debug.log
 .idea/
