@@ -17,6 +17,7 @@
 .formy-value {
     width: 100%;
     text-align: left;
+    white-space: normal;
 }
 
 .formy-value.not-clickable {

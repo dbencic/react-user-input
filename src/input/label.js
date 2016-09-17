@@ -35,7 +35,7 @@ Label.defaultProps = {
 
 Label.propTypes = {
     styleName: React.PropTypes.string,
-    value : React.PropTypes.node,
+    value : React.PropTypes.any,
     displayFormat: React.PropTypes.func,
     onClick: React.PropTypes.func,
     preformatted: React.PropTypes.bool
