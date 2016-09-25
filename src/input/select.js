@@ -131,7 +131,8 @@ class Select extends Component {
 Select.defaultProps = {
     onEditingFinished: ()=>{},
     onChange: ()=>{},
-    valueParser: (v)=>v //raw parser
+    valueParser: (v)=>v, //raw parser
+    mandatory: false
 };
 
 Select.propTypes = {

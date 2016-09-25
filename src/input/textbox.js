@@ -129,7 +129,8 @@ TextBox.defaultProps = {
     onEditingFinished: ()=>{},
     onChange: ()=>{},
     valueParser: (v)=>v, //raw parser
-    value: ""
+    value: "",
+    mandatory: false
 };
 
 TextBox.propTypes = {

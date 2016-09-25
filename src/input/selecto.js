@@ -149,7 +149,8 @@ class Selecto extends Component {
 Selecto.defaultProps = {
     onEditingFinished: ()=>{},
     onChange: ()=>{},
-    valueParser: (v)=>v //raw parser
+    valueParser: (v)=>v, //raw parser
+    mandatory: false
 };
 
 Selecto.propTypes = {

@@ -28,6 +28,9 @@ class StatusIcon extends Component {
     }
 }
 
+StatusIcon.defaultProps = {
+    mandatory: false
+};
 
 StatusIcon.propTypes = {
     onClicked: React.PropTypes.func.isRequired,

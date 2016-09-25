@@ -130,7 +130,8 @@ TextBox.defaultProps = {
     onChange: ()=>{},
     valueParser: (v)=>v, //raw parser
     value: "",
-    rows: 5
+    rows: 5,
+    mandatory: false
 };
 
 TextBox.propTypes = {

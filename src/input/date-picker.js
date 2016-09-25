@@ -128,7 +128,8 @@ class DatePickerInput extends Component {
 DatePickerInput.defaultProps = {
     onEditingFinished: ()=>{},
     onChange: ()=>{},
-    value: null
+    value: null,
+    mandatory: false
 };
 
 DatePickerInput.propTypes = {

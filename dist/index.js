@@ -42166,6 +42166,10 @@ var _moment = require("moment");
 
 var _moment2 = _interopRequireDefault(_moment);
 
+var _parsers = require("../parsers");
+
+var _parsers2 = _interopRequireDefault(_parsers);
+
 var _lodash = require("lodash");
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -42209,7 +42213,7 @@ var DatePickerInput = function (_Component) {
     }, {
         key: "getIsError",
         value: function getIsError(value, mandatory) {
-            return value === null || !value && mandatory;
+            return _parsers2.default.haveParsingFailed(value) || !value && mandatory;
         }
     }, {
         key: "getStateFromValues",
@@ -42257,7 +42261,7 @@ var DatePickerInput = function (_Component) {
                 }), _extends2), disabled)),
                 _react2.default.createElement(
                     "div",
-                    { className: "input-group-addon" },
+                    { className: "formy-addon input-group-addon" },
                     _react2.default.createElement(_statusIcon2.default, { error: this.state.error, onClicked: function onClicked() {
                             return _this2.onStatusIconClicked();
                         },
@@ -42337,7 +42341,8 @@ var DatePickerInput = function (_Component) {
 DatePickerInput.defaultProps = {
     onEditingFinished: function onEditingFinished() {},
     onChange: function onChange() {},
-    value: null
+    value: null,
+    mandatory: false
 };
 
 DatePickerInput.propTypes = {
@@ -42351,7 +42356,7 @@ DatePickerInput.propTypes = {
 
 exports.default = DatePickerInput;
 
-},{"./status-icon":188,"lodash":3,"moment":4,"react":176,"react-datepicker":5,"react-dom":7}],183:[function(require,module,exports){
+},{"../parsers":191,"./status-icon":188,"lodash":3,"moment":4,"react":176,"react-datepicker":5,"react-dom":7}],183:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42515,7 +42520,7 @@ var Label = function (_Component) {
                 ),
                 _react2.default.createElement(
                     "div",
-                    { className: "input-group-addon" },
+                    { className: "formy-addon input-group-addon" },
                     addon
                 )
             );
@@ -42566,6 +42571,10 @@ var _statusIcon = require("./status-icon");
 
 var _statusIcon2 = _interopRequireDefault(_statusIcon);
 
+var _parsers = require("../parsers");
+
+var _parsers2 = _interopRequireDefault(_parsers);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -42594,7 +42603,7 @@ var Select = function (_Component) {
     }, {
         key: "getIsError",
         value: function getIsError(value, mandatory) {
-            return value === null || !value && mandatory;
+            return _parsers2.default.haveParsingFailed(value) || !value && mandatory;
         }
     }, {
         key: "getStateFromValues",
@@ -42608,9 +42617,10 @@ var Select = function (_Component) {
     }, {
         key: "getStateFromProps",
         value: function getStateFromProps(props) {
+            var v = props.value || "";
             return Object.assign({
-                initialValue: props.value
-            }, this.getStateFromValues(props.value, props.value, props.mandatory));
+                initialValue: v
+            }, this.getStateFromValues(v, v, props.mandatory));
         }
     }, {
         key: "getInputClassName",
@@ -42630,6 +42640,9 @@ var Select = function (_Component) {
             var _this2 = this;
 
             var opts = Object.assign({}, this.props.options); //shallow clone
+            if (Object.getOwnPropertyNames(opts).find(function (o) {
+                return !o;
+            }) !== "") opts = Object.assign({ "": "-" }, opts);
             var options = Object.getOwnPropertyNames(opts).map(function (o) {
                 return _react2.default.createElement(
                     "option",
@@ -42658,7 +42671,7 @@ var Select = function (_Component) {
                 ),
                 _react2.default.createElement(
                     "div",
-                    { className: "input-group-addon" },
+                    { className: "input-group-addon formy-addon" },
                     _react2.default.createElement(_statusIcon2.default, { error: this.state.error, onClicked: function onClicked() {
                             return _this2.onStatusIconClicked();
                         },
@@ -42744,7 +42757,8 @@ Select.defaultProps = {
     onChange: function onChange() {},
     valueParser: function valueParser(v) {
         return v;
-    } //raw parser
+    }, //raw parser
+    mandatory: false
 };
 
 Select.propTypes = {
@@ -42760,7 +42774,7 @@ Select.propTypes = {
 
 exports.default = Select;
 
-},{"./status-icon":188,"react":176,"react-dom":7}],187:[function(require,module,exports){
+},{"../parsers":191,"./status-icon":188,"react":176,"react-dom":7}],187:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42783,6 +42797,10 @@ var _statusIcon = require("./status-icon");
 
 var _statusIcon2 = _interopRequireDefault(_statusIcon);
 
+var _parsers = require("../parsers");
+
+var _parsers2 = _interopRequireDefault(_parsers);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -42790,8 +42808,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-// import InputComponent from "./input-component";
 
 var Selecto = function (_Component) {
     _inherits(Selecto, _Component);
@@ -42813,7 +42829,7 @@ var Selecto = function (_Component) {
     }, {
         key: "getIsError",
         value: function getIsError(value, mandatory) {
-            return value === null || !value && mandatory;
+            return _parsers2.default.haveParsingFailed(value) || !value && mandatory;
         }
     }, {
         key: "getShowMoreOptions",
@@ -42836,9 +42852,10 @@ var Selecto = function (_Component) {
     }, {
         key: "getStateFromProps",
         value: function getStateFromProps(props) {
+            var v = props.value || "";
             return Object.assign({
-                initialValue: props.value
-            }, this.getStateFromValues(props.value, props.value, props.moreOptions, props.mandatory));
+                initialValue: v
+            }, this.getStateFromValues(v, v, props.moreOptions, props.mandatory));
         }
     }, {
         key: "getInputClassName",
@@ -42861,6 +42878,9 @@ var Selecto = function (_Component) {
             if (this.state.showMoreOptions) {
                 opts = Object.assign(opts, this.props.moreOptions);
             }
+            if (Object.getOwnPropertyNames(opts).find(function (o) {
+                return !o;
+            }) !== "") opts = Object.assign({ "": "-" }, opts);
             var options = Object.getOwnPropertyNames(opts).map(function (o) {
                 return _react2.default.createElement(
                     "option",
@@ -42890,7 +42910,7 @@ var Selecto = function (_Component) {
                 ),
                 _react2.default.createElement(
                     "div",
-                    { className: "input-group-addon" },
+                    { className: "formy-addon input-group-addon" },
                     _react2.default.createElement("input", _extends({ type: "checkbox" }, checked, disabled, {
                         onChange: function onChange(e) {
                             return _this2.moreOptionsClicked(e.target.checked);
@@ -42900,7 +42920,7 @@ var Selecto = function (_Component) {
                 ),
                 _react2.default.createElement(
                     "div",
-                    { className: "input-group-addon" },
+                    { className: "formy-addon input-group-addon" },
                     _react2.default.createElement(_statusIcon2.default, { error: this.state.error, onClicked: function onClicked() {
                             return _this2.onStatusIconClicked();
                         },
@@ -42997,7 +43017,8 @@ Selecto.defaultProps = {
     onChange: function onChange() {},
     valueParser: function valueParser(v) {
         return v;
-    } //raw parser
+    }, //raw parser
+    mandatory: false
 };
 
 Selecto.propTypes = {
@@ -43015,7 +43036,7 @@ Selecto.propTypes = {
 
 exports.default = Selecto;
 
-},{"./status-icon":188,"react":176,"react-dom":7}],188:[function(require,module,exports){
+},{"../parsers":191,"./status-icon":188,"react":176,"react-dom":7}],188:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43082,6 +43103,10 @@ var StatusIcon = function (_Component) {
     return StatusIcon;
 }(_react.Component);
 
+StatusIcon.defaultProps = {
+    mandatory: false
+};
+
 StatusIcon.propTypes = {
     onClicked: _react2.default.PropTypes.func.isRequired,
     error: _react2.default.PropTypes.bool.isRequired,
@@ -43114,6 +43139,10 @@ var _statusIcon = require("./status-icon");
 
 var _statusIcon2 = _interopRequireDefault(_statusIcon);
 
+var _parsers = require("../parsers");
+
+var _parsers2 = _interopRequireDefault(_parsers);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -43121,8 +43150,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-// import InputComponent from "./input-component";
 
 var TextBox = function (_Component) {
     _inherits(TextBox, _Component);
@@ -43144,7 +43171,7 @@ var TextBox = function (_Component) {
     }, {
         key: "getIsError",
         value: function getIsError(value, mandatory) {
-            return value === null || !value && mandatory;
+            return _parsers2.default.haveParsingFailed(value) || !value && mandatory;
         }
     }, {
         key: "getStateFromValues",
@@ -43158,9 +43185,10 @@ var TextBox = function (_Component) {
     }, {
         key: "getStateFromProps",
         value: function getStateFromProps(props) {
+            var v = props.value || "";
             return Object.assign({
-                initialValue: props.value
-            }, this.getStateFromValues(props.value || "", props.value || "", props.mandatory));
+                initialValue: v
+            }, this.getStateFromValues(v, v, props.mandatory));
         }
     }, {
         key: "getInputClassName",
@@ -43205,7 +43233,7 @@ var TextBox = function (_Component) {
                     } })),
                 _react2.default.createElement(
                     "div",
-                    { className: "input-group-addon" },
+                    { className: "formy-addon input-group-addon" },
                     _react2.default.createElement(_statusIcon2.default, { error: this.state.error, onClicked: function onClicked() {
                             return _this2.onStatusIconClicked();
                         },
@@ -43293,7 +43321,8 @@ TextBox.defaultProps = {
         return v;
     }, //raw parser
     value: "",
-    rows: 5
+    rows: 5,
+    mandatory: false
 };
 
 TextBox.propTypes = {
@@ -43309,7 +43338,7 @@ TextBox.propTypes = {
 
 exports.default = TextBox;
 
-},{"./status-icon":188,"react":176,"react-dom":7}],190:[function(require,module,exports){
+},{"../parsers":191,"./status-icon":188,"react":176,"react-dom":7}],190:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43332,6 +43361,10 @@ var _statusIcon = require("./status-icon");
 
 var _statusIcon2 = _interopRequireDefault(_statusIcon);
 
+var _parsers = require("../parsers");
+
+var _parsers2 = _interopRequireDefault(_parsers);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -43339,8 +43372,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-// import InputComponent from "./input-component";
 
 var TextBox = function (_Component) {
     _inherits(TextBox, _Component);
@@ -43362,7 +43393,7 @@ var TextBox = function (_Component) {
     }, {
         key: "getIsError",
         value: function getIsError(value, mandatory) {
-            return value === null || !value && mandatory;
+            return _parsers2.default.haveParsingFailed(value) || !value && mandatory;
         }
     }, {
         key: "getStateFromValues",
@@ -43376,9 +43407,10 @@ var TextBox = function (_Component) {
     }, {
         key: "getStateFromProps",
         value: function getStateFromProps(props) {
+            var v = props.value || "";
             return Object.assign({
-                initialValue: props.value
-            }, this.getStateFromValues(props.value, props.value, props.mandatory));
+                initialValue: v
+            }, this.getStateFromValues(v, v, props.mandatory));
         }
     }, {
         key: "getInputClassName",
@@ -43423,7 +43455,7 @@ var TextBox = function (_Component) {
                     } })),
                 _react2.default.createElement(
                     "div",
-                    { className: "input-group-addon" },
+                    { className: "formy-addon input-group-addon" },
                     _react2.default.createElement(_statusIcon2.default, { error: this.state.error, onClicked: function onClicked() {
                             return _this2.onStatusIconClicked();
                         },
@@ -43510,7 +43542,8 @@ TextBox.defaultProps = {
     valueParser: function valueParser(v) {
         return v;
     }, //raw parser
-    value: ""
+    value: "",
+    mandatory: false
 };
 
 TextBox.propTypes = {
@@ -43525,7 +43558,7 @@ TextBox.propTypes = {
 
 exports.default = TextBox;
 
-},{"./status-icon":188,"react":176,"react-dom":7}],191:[function(require,module,exports){
+},{"../parsers":191,"./status-icon":188,"react":176,"react-dom":7}],191:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43544,11 +43577,16 @@ var floatCheckRegex = /^[+]?\d*[\.,]?[\d]+$/;
 var intCheckRegex = /^[+,-]?[0-9]+$/;
 var emailRegex = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
 
+//value returned in case that value to parse is invalid
+var nonParsableValue = {
+	dummyMember: false
+};
+
 function floatParser(value) {
 	value = value.trim();
 	if (!value) return value; //value is not defined
 	var floatnum = value.match(floatCheckRegex); //if there is no match result is null
-	if (!floatnum) return null; //value is in wrong format
+	if (!floatnum) return nonParsableValue; //value is in wrong format
 	value = value.replace(",", ".");
 	return parseFloat(value);
 }
@@ -43556,14 +43594,14 @@ function floatParser(value) {
 function intParser(value) {
 	value = value.trim();
 	if (!value) return value;
-	if (!intCheckRegex.test(value)) return null;
+	if (!intCheckRegex.test(value)) return nonParsableValue;
 	return parseInt(value);
 }
 
 function emailParser(value) {
 	value = value.trim();
 	if (!value) return value;
-	if (!emailRegex.test(value)) return null;
+	if (!emailRegex.test(value)) return nonParsableValue;
 	return value;
 }
 
@@ -43580,13 +43618,19 @@ function trim(value) {
 	return value;
 }
 
+function haveParsingFailed(value) {
+	return value === nonParsableValue;
+};
+
 exports.default = {
 	float: floatParser,
 	int: intParser,
 	email: emailParser,
 	generic: genericParser,
 	raw: genericParser,
-	trim: trim
+	trim: trim,
+	nonParsableValue: nonParsableValue,
+	haveParsingFailed: haveParsingFailed
 };
 
 },{}]},{},[1]);
