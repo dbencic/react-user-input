@@ -12,9 +12,7 @@ let intCheckRegex = /^[+,-]?[0-9]+$/;
 let emailRegex = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
 
 //value returned in case that value to parse is invalid
-let nonParsableValue = {
-	dummyMember: false
-};
+let nonParsableValue = null;
 
 function floatParser(value) {
 	value = value.trim();
