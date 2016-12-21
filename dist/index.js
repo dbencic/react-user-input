@@ -42364,8 +42364,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 /**
  * Keeps form data encapsulated and serves as a factory for change handlers.
- * Applies non null patern touroginal value so it is safe to do something like:
- * formData.original.myFIeldName
  * @param value value that will be rapresented by form (can be null)
  * @param listener for valuechanges, not mandatory, signature: (newValue, changedFieldName)
  */
@@ -42374,25 +42372,36 @@ function FormData() {
     var value = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
     var changeListener = arguments.length <= 1 || arguments[1] === undefined ? function (newValue, changedFieldName) {} : arguments[1];
 
-    this.original = value;
     this.value = Object.assign({}, value);
     this.changeListener = changeListener;
     this.mandatoryFields = [];
+    this.allFields = [];
 
     /**
      * returns change handler that wil update current value
      */
     this.changeHandler = function (fieldName) {
         return function (newFieldValue) {
-            this.value[fieldName] = newFieldValue;
-            this.changeListener(this.value, fieldName);
+            if (this.value[fieldName] != newFieldValue) {
+                this.value[fieldName] = newFieldValue;
+                this.changeListener(this.value, fieldName);
+            }
         }.bind(this);
     };
 
+    /**
+     * generates field's attributes:
+     * - change handler
+     * - value
+     * - mandatory
+     * Use spread operator inside jsx to add this properties
+     */
     this.field = function (fieldName, mandatory) {
         if (mandatory) {
             this.mandatoryFields.push(fieldName);
         }
+        this.allFields.push(fieldName);
+
         return {
             onChange: this.changeHandler(fieldName),
             value: this.value[fieldName],
@@ -42402,18 +42411,52 @@ function FormData() {
 
     /**
      * returns edited value, if value contains all required fields, else returns null
-     * so null is sign that value in form is not edited correctly. Optionally verify parameter
-     * can be passed as false, so this verification will be skipped and value will be returned as it is
-     * @param verify 
+     * so null is sign that value in form is not edited correctly.
+     * Returned value will contain only fields declared in form!
      */
     this.getValue = function () {
-        var verify = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-
-        for (var i = 0; i < this.mandatoryFields.length && verify; i++) {
-            if (!this.value[this.mandatoryFields[i]]) return null;
+        for (var i = 0; i < this.mandatoryFields.length; i++) {
+            if (!this.value[this.mandatoryFields[i]]) {
+                // console.log("value for mandatory field %s not found", this.mandatoryFields[i]);
+                return null;
+            };
         }
-        return this.value;
+        return _trim(this.value, this.allFields);
     };
+
+    /**
+     * returns current value, regardless if value is valid or not and regardless of formFields
+     * This can be usefull for component updates
+     * if in that update form fields changes (for example checkbox advanced can be turned on/off)
+     */
+    this.rawValue = function () {
+        return Object.assign({}, this.value);
+    };
+
+    /**
+     * logs current value to console
+     */
+    this.log = function () {
+        console.log("--------dumping form data to log -------");
+        console.log("Current value: ");
+        console.log(this.value);
+        console.log("All fields: ");
+        console.log(this.allFields);
+        console.log("Mandatory fields: ");
+        console.log(this.mandatoryFields);
+        console.log("------END dumping form data to log ------");
+    };
+
+    /**
+     * trims value to only registered fields
+     */
+    function _trim(value, fields) {
+        var result = {};
+        fields.forEach(function (f) {
+            result[f] = value[f];
+        });
+        return result;
+    }
 }
 
 exports.default = FormData;
