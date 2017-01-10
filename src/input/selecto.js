@@ -2,11 +2,13 @@ import React,{Component} from "react";
 import ReactDOM from "react-dom";
 import StatusIcon from "./status-icon";
 import parsers from "../parsers";
+import mixEventMethods from "./mixin/mixEventMethods";
 
 class Selecto extends Component {
 
     constructor(props) {
         super(props);
+        mixEventMethods(this);
         this.state = this.getStateFromProps(props);
     }
 
@@ -114,35 +116,29 @@ class Selecto extends Component {
         });
     }
 
-    onBlurRoutine(event) {
-        if (!this.state.error) {
-            this.finish(this.state.value);
-        }
-        this.props.onChange(this.state.value);
-    }
+    // onBlurRoutine(event) {
+    //     this.finish(this.state.value);
+    // }
 
-    finish(value) {
-        if (!this.state.error) {
-            this.props.onChange(value);
-            this.props.onEditingFinished(this.state.error);
-        }
-    }
+    // finish(value) {
+    //     this.props.onChange(value);
+    //     this.props.onEditingFinished(this.state.error);
+    // }
 
-    onKeyPressRoutine(e) {
-        let keyCode = e.nativeEvent.keyCode;
-        if (keyCode === 13) {
-            this.finish(this.state.value);
-        }
-    }
+    // onKeyPressRoutine(e) {
+    //     let keyCode = e.nativeEvent.keyCode;
+    //     if (keyCode === 13) {
+    //         this.finish(this.state.value);
+    //     }
+    // }
 
-    onKeyDownRoutine(e) {
-        let keyCode = e.nativeEvent.keyCode;
-        if(keyCode == 27) {
-            this.setState(this.getStateFromValues(this.state.initialValue, this.state.initialValue, this.props.moreOptions, this.props.mandatory));
-            this.props.onChange(this.state.initialValue);
-            this.props.onEditingFinished(this.getIsError(this.state.initialValue, this.props.mandatory));
-        }
-    }
+    // onKeyDownRoutine(e) {
+    //     let keyCode = e.nativeEvent.keyCode;
+    //     if(keyCode == 27) {
+    //         this.setState(this.getStateFromValues(this.state.initialValue, this.state.initialValue, this.props.moreOptions, this.props.mandatory));
+    //         this.finish(this.state.initialValue);
+    //     }
+    // }
 
 }
 

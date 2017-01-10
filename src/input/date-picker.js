@@ -5,11 +5,13 @@ import DatePicker from "react-datepicker";
 import moment from "moment";
 import parsers from "../parsers";
 import _ from "lodash";
+import mixEventMethods from "./mixin/mixEventMethods";
 
 class DatePickerInput extends Component {
 
     constructor(props) {
         super(props);
+        mixEventMethods(this, ["onBlurRoutine", "finish"]);
         this.state = this.getStateFromProps(props);
     }
 
@@ -93,36 +95,14 @@ class DatePickerInput extends Component {
         });
     }
 
-    onBlurRoutine(event) {
-        if (!this.state.error) {
-            this.finish(this.state.value);
-        }
-        this.props.onChange(this.state.value);
-    }
-
-    finish(value) {
-        if (!this.state.error) {
-            this.props.onChange(value);
-            this.props.onEditingFinished(this.state.error);
-        }
-    }
-
-    // onKeyPressRoutine(e) {
-    //     let keyCode = e.nativeEvent.keyCode;
-    //     if (keyCode === 13) {
-    //         this.finish(this.state.value);
-    //     }
+    // onBlurRoutine(event) {
+    //     this.finish(this.state.value);
     // }
 
-    // onKeyDownRoutine(e) {
-    //     let keyCode = e.nativeEvent.keyCode;
-    //     if(keyCode == 27) {
-    //         this.setState(this.getStateFromValues(this.state.initialValue, this.props.mandatory));
-    //         this.props.onChange(this.state.initialValue);
-    //         this.props.onEditingFinished(this.getIsError(this.state.initialValue, this.props.mandatory));
-    //     }
+    // finish(value) {
+    //     this.props.onChange(value);
+    //     this.props.onEditingFinished(this.state.error);
     // }
-
 }
 
 DatePickerInput.defaultProps = {

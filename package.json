@@ -1,6 +1,6 @@
 {
   "name": "react-user-input",
-  "version": "1.0.14",
+  "version": "1.0.16",
   "description": "Form factory for react applications. Suports format checking, conversion and inline editing",
   "main": "index.js",
   "repository": {

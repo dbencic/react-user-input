@@ -5,21 +5,29 @@
  */
 
 function FormData(value = {}, changeListener = (newValue, changedFieldName)=>{}) {
-    this.value = Object.assign({}, value);
-    this.changeListener = changeListener;
-    this.mandatoryFields = [];
-    this.allFields = [];
+    this.__value = Object.assign({}, value);
+    this.__changeListener = changeListener;
+    this.__mandatoryFields = [];
+    this.__allFields = [];
 
     /**
      * returns change handler that wil update current value
      */
     this.changeHandler = function(fieldName) {
         return function(newFieldValue){
-            if (this.value[fieldName] != newFieldValue) {
-                this.value[fieldName] = newFieldValue;
-                this.changeListener(this.value, fieldName);
-            }
+            this.updateValue(fieldName, newFieldValue);
         }.bind(this);
+    };
+
+    /**
+     * Updates field value
+     */
+    this.updateValue = function(fieldName, newFieldValue) {
+        if (this.__value[fieldName] != newFieldValue) {
+            // console.log("Updating value of field: " + fieldName + " to: ", newFieldValue);
+            this.__value[fieldName] = newFieldValue;
+            this.__changeListener(this.__value, fieldName);
+        }
     };
 
     /**
@@ -31,13 +39,13 @@ function FormData(value = {}, changeListener = (newValue, changedFieldName)=>{})
      */
     this.field = function(fieldName, mandatory) {
         if (mandatory) {
-            this.mandatoryFields.push(fieldName);
+            this.__mandatoryFields.push(fieldName);
         }
-        this.allFields.push(fieldName);
+        this.__allFields.push(fieldName);
 
         return {
             onChange: this.changeHandler(fieldName),
-            value: this.value[fieldName],
+            value: this.__value[fieldName],
             mandatory: mandatory
         };
     };
@@ -48,13 +56,13 @@ function FormData(value = {}, changeListener = (newValue, changedFieldName)=>{})
      * Returned value will contain only fields declared in form!
      */
     this.getValue = function() {
-        for (let i=0; i<this.mandatoryFields.length; i++) {
-            if (!this.value[this.mandatoryFields[i]]) {
+        for (let i=0; i<this.__mandatoryFields.length; i++) {
+            if (!this.__value[this.__mandatoryFields[i]]) {
                 // console.log("value for mandatory field %s not found", this.mandatoryFields[i]);
                 return null;
             };
         }
-        return _trim(this.value, this.allFields);
+        return _trim(this.__value, this.__allFields);
     };
 
     /**
@@ -63,7 +71,7 @@ function FormData(value = {}, changeListener = (newValue, changedFieldName)=>{})
      * if in that update form fields changes (for example checkbox advanced can be turned on/off)
      */
     this.rawValue = function(){
-        return Object.assign({}, this.value);
+        return Object.assign({}, this.__value);
     };
 
     /**
@@ -72,11 +80,11 @@ function FormData(value = {}, changeListener = (newValue, changedFieldName)=>{})
     this.log = function() {
         console.log("--------dumping form data to log -------");
         console.log("Current value: ");
-        console.log(this.value);
+        console.log(this.__value);
         console.log("All fields: ");
-        console.log(this.allFields);
+        console.log(this.__allFields);
         console.log("Mandatory fields: ");
-        console.log(this.mandatoryFields);
+        console.log(this.__mandatoryFields);
         console.log("------END dumping form data to log ------");
     };
 

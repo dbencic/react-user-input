@@ -26,7 +26,7 @@ exports.input = _input2.default;
 exports.parsers = _parsers2.default;
 exports.FormGroup = _form.FormGroup;
 
-},{"./src/form":178,"./src/inline/":179,"./src/input/":184,"./src/parsers":191}],2:[function(require,module,exports){
+},{"./src/form":178,"./src/inline/":179,"./src/input/":184,"./src/parsers":192}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -42135,7 +42135,7 @@ SelectInlineEdit.propTypes = {
 
 exports.default = SelectInlineEdit;
 
-},{"../input/select":186,"./inline-layout":180,"react":176}],182:[function(require,module,exports){
+},{"../input/select":187,"./inline-layout":180,"react":176}],182:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42174,6 +42174,10 @@ var _lodash = require("lodash");
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _mixEventMethods = require("./mixin/mixEventMethods");
+
+var _mixEventMethods2 = _interopRequireDefault(_mixEventMethods);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -42192,6 +42196,7 @@ var DatePickerInput = function (_Component) {
 
         var _this = _possibleConstructorReturn(this, (DatePickerInput.__proto__ || Object.getPrototypeOf(DatePickerInput)).call(this, props));
 
+        (0, _mixEventMethods2.default)(_this, ["onBlurRoutine", "finish"]);
         _this.state = _this.getStateFromProps(props);
         return _this;
     }
@@ -42300,37 +42305,14 @@ var DatePickerInput = function (_Component) {
                 error: this.getIsError(value, this.props.mandatory)
             });
         }
-    }, {
-        key: "onBlurRoutine",
-        value: function onBlurRoutine(event) {
-            if (!this.state.error) {
-                this.finish(this.state.value);
-            }
-            this.props.onChange(this.state.value);
-        }
-    }, {
-        key: "finish",
-        value: function finish(value) {
-            if (!this.state.error) {
-                this.props.onChange(value);
-                this.props.onEditingFinished(this.state.error);
-            }
-        }
 
-        // onKeyPressRoutine(e) {
-        //     let keyCode = e.nativeEvent.keyCode;
-        //     if (keyCode === 13) {
-        //         this.finish(this.state.value);
-        //     }
+        // onBlurRoutine(event) {
+        //     this.finish(this.state.value);
         // }
 
-        // onKeyDownRoutine(e) {
-        //     let keyCode = e.nativeEvent.keyCode;
-        //     if(keyCode == 27) {
-        //         this.setState(this.getStateFromValues(this.state.initialValue, this.props.mandatory));
-        //         this.props.onChange(this.state.initialValue);
-        //         this.props.onEditingFinished(this.getIsError(this.state.initialValue, this.props.mandatory));
-        //     }
+        // finish(value) {
+        //     this.props.onChange(value);
+        //     this.props.onEditingFinished(this.state.error);
         // }
 
     }]);
@@ -42356,7 +42338,7 @@ DatePickerInput.propTypes = {
 
 exports.default = DatePickerInput;
 
-},{"../parsers":191,"./status-icon":188,"lodash":3,"moment":4,"react":176,"react-datepicker":5,"react-dom":7}],183:[function(require,module,exports){
+},{"../parsers":192,"./mixin/mixEventMethods":186,"./status-icon":189,"lodash":3,"moment":4,"react":176,"react-datepicker":5,"react-dom":7}],183:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42372,21 +42354,29 @@ function FormData() {
     var value = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
     var changeListener = arguments.length <= 1 || arguments[1] === undefined ? function (newValue, changedFieldName) {} : arguments[1];
 
-    this.value = Object.assign({}, value);
-    this.changeListener = changeListener;
-    this.mandatoryFields = [];
-    this.allFields = [];
+    this.__value = Object.assign({}, value);
+    this.__changeListener = changeListener;
+    this.__mandatoryFields = [];
+    this.__allFields = [];
 
     /**
      * returns change handler that wil update current value
      */
     this.changeHandler = function (fieldName) {
         return function (newFieldValue) {
-            if (this.value[fieldName] != newFieldValue) {
-                this.value[fieldName] = newFieldValue;
-                this.changeListener(this.value, fieldName);
-            }
+            this.updateValue(fieldName, newFieldValue);
         }.bind(this);
+    };
+
+    /**
+     * Updates field value
+     */
+    this.updateValue = function (fieldName, newFieldValue) {
+        if (this.__value[fieldName] != newFieldValue) {
+            // console.log("Updating value of field: " + fieldName + " to: ", newFieldValue);
+            this.__value[fieldName] = newFieldValue;
+            this.__changeListener(this.__value, fieldName);
+        }
     };
 
     /**
@@ -42398,13 +42388,13 @@ function FormData() {
      */
     this.field = function (fieldName, mandatory) {
         if (mandatory) {
-            this.mandatoryFields.push(fieldName);
+            this.__mandatoryFields.push(fieldName);
         }
-        this.allFields.push(fieldName);
+        this.__allFields.push(fieldName);
 
         return {
             onChange: this.changeHandler(fieldName),
-            value: this.value[fieldName],
+            value: this.__value[fieldName],
             mandatory: mandatory
         };
     };
@@ -42415,13 +42405,13 @@ function FormData() {
      * Returned value will contain only fields declared in form!
      */
     this.getValue = function () {
-        for (var i = 0; i < this.mandatoryFields.length; i++) {
-            if (!this.value[this.mandatoryFields[i]]) {
+        for (var i = 0; i < this.__mandatoryFields.length; i++) {
+            if (!this.__value[this.__mandatoryFields[i]]) {
                 // console.log("value for mandatory field %s not found", this.mandatoryFields[i]);
                 return null;
             };
         }
-        return _trim(this.value, this.allFields);
+        return _trim(this.__value, this.__allFields);
     };
 
     /**
@@ -42430,7 +42420,7 @@ function FormData() {
      * if in that update form fields changes (for example checkbox advanced can be turned on/off)
      */
     this.rawValue = function () {
-        return Object.assign({}, this.value);
+        return Object.assign({}, this.__value);
     };
 
     /**
@@ -42439,11 +42429,11 @@ function FormData() {
     this.log = function () {
         console.log("--------dumping form data to log -------");
         console.log("Current value: ");
-        console.log(this.value);
+        console.log(this.__value);
         console.log("All fields: ");
-        console.log(this.allFields);
+        console.log(this.__allFields);
         console.log("Mandatory fields: ");
-        console.log(this.mandatoryFields);
+        console.log(this.__mandatoryFields);
         console.log("------END dumping form data to log ------");
     };
 
@@ -42500,7 +42490,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = { TextBox: _textbox2.default, TextArea: _textarea2.default, Label: _label2.default, Select: _select2.default, Selecto: _selecto2.default, DatePicker: _datePicker2.default, FormData: _formData2.default };
 
-},{"./date-picker":182,"./form-data":183,"./label":185,"./select":186,"./selecto":187,"./textarea":189,"./textbox":190}],185:[function(require,module,exports){
+},{"./date-picker":182,"./form-data":183,"./label":185,"./select":187,"./selecto":188,"./textarea":190,"./textbox":191}],185:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42594,6 +42584,45 @@ exports.default = Label;
 },{"react":176}],186:[function(require,module,exports){
 "use strict";
 
+/**
+ * adds common event methods
+ */
+module.exports = function (instance, methodsToBind) {
+    if (!instance) throw new Error("instance (first argument). Cannot be null. Methods should be bound to it");
+    var onBlurRoutine = function (event) {
+        this.finish(this.state.value);
+    }.bind(instance);
+
+    var finish = function (value) {
+        this.props.onChange(value);
+        this.props.onEditingFinished(this.state.error);
+    }.bind(instance);
+
+    var onKeyPressRoutine = function (e) {
+        var keyCode = e.nativeEvent.keyCode;
+        if (keyCode === 13) {
+            this.finish(this.state.value);
+        }
+    }.bind(instance);
+
+    var onKeyDownRoutine = function (e) {
+        var keyCode = e.nativeEvent.keyCode;
+        if (keyCode == 27) {
+            this.setState(this.getStateFromValues(this.state.initialValue, this.state.initialValue, this.props.mandatory));
+            this.finish(this.state.initialValue);
+        }
+    }.bind(instance);
+
+    var methods = { onBlurRoutine: onBlurRoutine, finish: finish, onKeyPressRoutine: onKeyPressRoutine, onKeyDownRoutine: onKeyDownRoutine };
+    if (!methodsToBind) methodsToBind = Object.getOwnPropertyNames(methods);
+    methodsToBind.forEach(function (methodName) {
+        instance[methodName] = methods[methodName];
+    });
+};
+
+},{}],187:[function(require,module,exports){
+"use strict";
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -42618,6 +42647,10 @@ var _parsers = require("../parsers");
 
 var _parsers2 = _interopRequireDefault(_parsers);
 
+var _mixEventMethods = require("./mixin/mixEventMethods");
+
+var _mixEventMethods2 = _interopRequireDefault(_mixEventMethods);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -42634,6 +42667,7 @@ var Select = function (_Component) {
 
         var _this = _possibleConstructorReturn(this, (Select.__proto__ || Object.getPrototypeOf(Select)).call(this, props));
 
+        (0, _mixEventMethods2.default)(_this);
         _this.state = _this.getStateFromProps(props);
         return _this;
     }
@@ -42756,40 +42790,31 @@ var Select = function (_Component) {
                 error: this.getIsError(value, this.props.mandatory)
             });
         }
-    }, {
-        key: "onBlurRoutine",
-        value: function onBlurRoutine(event) {
-            if (!this.state.error) {
-                this.finish(this.state.value);
-            }
-            this.props.onChange(this.state.value);
-        }
-    }, {
-        key: "finish",
-        value: function finish(value) {
-            if (!this.state.error) {
-                this.props.onChange(value);
-                this.props.onEditingFinished(this.state.error);
-            }
-        }
-    }, {
-        key: "onKeyPressRoutine",
-        value: function onKeyPressRoutine(e) {
-            var keyCode = e.nativeEvent.keyCode;
-            if (keyCode === 13) {
-                this.finish(this.state.value);
-            }
-        }
-    }, {
-        key: "onKeyDownRoutine",
-        value: function onKeyDownRoutine(e) {
-            var keyCode = e.nativeEvent.keyCode;
-            if (keyCode == 27) {
-                this.setState(this.getStateFromValues(this.state.initialValue, this.state.initialValue, this.props.mandatory));
-                this.props.onChange(this.state.initialValue);
-                this.props.onEditingFinished(this.getIsError(this.state.initialValue, this.props.mandatory));
-            }
-        }
+
+        // onBlurRoutine(event) {
+        //     this.finish(this.state.value);
+        // }
+
+        // finish(value) {
+        //     this.props.onChange(value);
+        //     this.props.onEditingFinished(this.state.error);
+        // }
+
+        // onKeyPressRoutine(e) {
+        //     let keyCode = e.nativeEvent.keyCode;
+        //     if (keyCode === 13) {
+        //         this.finish(this.state.value);
+        //     }
+        // }
+
+        // onKeyDownRoutine(e) {
+        //     let keyCode = e.nativeEvent.keyCode;
+        //     if(keyCode == 27) {
+        //         this.setState(this.getStateFromValues(this.state.initialValue, this.state.initialValue, this.props.mandatory));
+        //         this.finish(this.state.initialValue);
+        //     }
+        // }
+
     }]);
 
     return Select;
@@ -42817,7 +42842,7 @@ Select.propTypes = {
 
 exports.default = Select;
 
-},{"../parsers":191,"./status-icon":188,"react":176,"react-dom":7}],187:[function(require,module,exports){
+},{"../parsers":192,"./mixin/mixEventMethods":186,"./status-icon":189,"react":176,"react-dom":7}],188:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42844,6 +42869,10 @@ var _parsers = require("../parsers");
 
 var _parsers2 = _interopRequireDefault(_parsers);
 
+var _mixEventMethods = require("./mixin/mixEventMethods");
+
+var _mixEventMethods2 = _interopRequireDefault(_mixEventMethods);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -42860,6 +42889,7 @@ var Selecto = function (_Component) {
 
         var _this = _possibleConstructorReturn(this, (Selecto.__proto__ || Object.getPrototypeOf(Selecto)).call(this, props));
 
+        (0, _mixEventMethods2.default)(_this);
         _this.state = _this.getStateFromProps(props);
         return _this;
     }
@@ -43016,40 +43046,31 @@ var Selecto = function (_Component) {
                 error: this.getIsError(value, this.props.mandatory)
             });
         }
-    }, {
-        key: "onBlurRoutine",
-        value: function onBlurRoutine(event) {
-            if (!this.state.error) {
-                this.finish(this.state.value);
-            }
-            this.props.onChange(this.state.value);
-        }
-    }, {
-        key: "finish",
-        value: function finish(value) {
-            if (!this.state.error) {
-                this.props.onChange(value);
-                this.props.onEditingFinished(this.state.error);
-            }
-        }
-    }, {
-        key: "onKeyPressRoutine",
-        value: function onKeyPressRoutine(e) {
-            var keyCode = e.nativeEvent.keyCode;
-            if (keyCode === 13) {
-                this.finish(this.state.value);
-            }
-        }
-    }, {
-        key: "onKeyDownRoutine",
-        value: function onKeyDownRoutine(e) {
-            var keyCode = e.nativeEvent.keyCode;
-            if (keyCode == 27) {
-                this.setState(this.getStateFromValues(this.state.initialValue, this.state.initialValue, this.props.moreOptions, this.props.mandatory));
-                this.props.onChange(this.state.initialValue);
-                this.props.onEditingFinished(this.getIsError(this.state.initialValue, this.props.mandatory));
-            }
-        }
+
+        // onBlurRoutine(event) {
+        //     this.finish(this.state.value);
+        // }
+
+        // finish(value) {
+        //     this.props.onChange(value);
+        //     this.props.onEditingFinished(this.state.error);
+        // }
+
+        // onKeyPressRoutine(e) {
+        //     let keyCode = e.nativeEvent.keyCode;
+        //     if (keyCode === 13) {
+        //         this.finish(this.state.value);
+        //     }
+        // }
+
+        // onKeyDownRoutine(e) {
+        //     let keyCode = e.nativeEvent.keyCode;
+        //     if(keyCode == 27) {
+        //         this.setState(this.getStateFromValues(this.state.initialValue, this.state.initialValue, this.props.moreOptions, this.props.mandatory));
+        //         this.finish(this.state.initialValue);
+        //     }
+        // }
+
     }]);
 
     return Selecto;
@@ -43079,7 +43100,7 @@ Selecto.propTypes = {
 
 exports.default = Selecto;
 
-},{"../parsers":191,"./status-icon":188,"react":176,"react-dom":7}],188:[function(require,module,exports){
+},{"../parsers":192,"./mixin/mixEventMethods":186,"./status-icon":189,"react":176,"react-dom":7}],189:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43159,7 +43180,7 @@ StatusIcon.propTypes = {
 
 exports.default = StatusIcon;
 
-},{"react":176}],189:[function(require,module,exports){
+},{"react":176}],190:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43186,6 +43207,10 @@ var _parsers = require("../parsers");
 
 var _parsers2 = _interopRequireDefault(_parsers);
 
+var _mixEventMethods = require("./mixin/mixEventMethods");
+
+var _mixEventMethods2 = _interopRequireDefault(_mixEventMethods);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -43202,6 +43227,7 @@ var TextBox = function (_Component) {
 
         var _this = _possibleConstructorReturn(this, (TextBox.__proto__ || Object.getPrototypeOf(TextBox)).call(this, props));
 
+        (0, _mixEventMethods2.default)(_this);
         _this.state = _this.getStateFromProps(props);
         return _this;
     }
@@ -43318,40 +43344,32 @@ var TextBox = function (_Component) {
                 error: this.getIsError(value, this.props.mandatory)
             });
         }
-    }, {
-        key: "onBlurRoutine",
-        value: function onBlurRoutine(event) {
-            if (!this.state.error) {
-                this.finish(this.state.value);
-            }
-            this.props.onChange(this.state.value);
-        }
-    }, {
-        key: "finish",
-        value: function finish(value) {
-            if (!this.state.error) {
-                this.props.onChange(value);
-                this.props.onEditingFinished(this.state.error);
-            }
-        }
-    }, {
-        key: "onKeyPressRoutine",
-        value: function onKeyPressRoutine(e) {
-            var keyCode = e.nativeEvent.keyCode;
-            if (keyCode === 13) {
-                this.finish(this.state.value);
-            }
-        }
-    }, {
-        key: "onKeyDownRoutine",
-        value: function onKeyDownRoutine(e) {
-            var keyCode = e.nativeEvent.keyCode;
-            if (keyCode == 27) {
-                this.setState(this.getStateFromValues(this.state.initialValue, this.state.initialValue, this.props.mandatory));
-                this.props.onChange(this.state.initialValue);
-                this.props.onEditingFinished(this.getIsError(this.state.initialValue, this.props.mandatory));
-            }
-        }
+
+        // onBlurRoutine(event) {
+        //     this.finish(this.state.value);
+        // }
+
+        // finish(value) {
+        //     this.props.onChange(value);
+        //     this.props.onEditingFinished(this.state.error);
+        // }
+
+        // onKeyPressRoutine(e) {
+        //     let keyCode = e.nativeEvent.keyCode;
+        //     if (keyCode === 13) {
+        //         this.finish(this.state.value);
+        //     }
+        // }
+
+        // onKeyDownRoutine(e) {
+        //     let keyCode = e.nativeEvent.keyCode;
+        //     if(keyCode == 27) {
+        //         this.setState(this.getStateFromValues(this.state.initialValue, this.state.initialValue, this.props.mandatory));
+        //         this.finish(this.state.initialValue);
+        //         // this.props.onEditingFinished(this.getIsError(this.state.initialValue, this.props.mandatory));
+        //     }
+        // }
+
     }]);
 
     return TextBox;
@@ -43381,7 +43399,7 @@ TextBox.propTypes = {
 
 exports.default = TextBox;
 
-},{"../parsers":191,"./status-icon":188,"react":176,"react-dom":7}],190:[function(require,module,exports){
+},{"../parsers":192,"./mixin/mixEventMethods":186,"./status-icon":189,"react":176,"react-dom":7}],191:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43408,6 +43426,10 @@ var _parsers = require("../parsers");
 
 var _parsers2 = _interopRequireDefault(_parsers);
 
+var _mixEventMethods = require("./mixin/mixEventMethods");
+
+var _mixEventMethods2 = _interopRequireDefault(_mixEventMethods);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -43424,6 +43446,7 @@ var TextBox = function (_Component) {
 
         var _this = _possibleConstructorReturn(this, (TextBox.__proto__ || Object.getPrototypeOf(TextBox)).call(this, props));
 
+        (0, _mixEventMethods2.default)(_this);
         _this.state = _this.getStateFromProps(props);
         return _this;
     }
@@ -43540,40 +43563,32 @@ var TextBox = function (_Component) {
                 error: this.getIsError(value, this.props.mandatory)
             });
         }
-    }, {
-        key: "onBlurRoutine",
-        value: function onBlurRoutine(event) {
-            if (!this.state.error) {
-                this.finish(this.state.value);
-            }
-            this.props.onChange(this.state.value);
-        }
-    }, {
-        key: "finish",
-        value: function finish(value) {
-            if (!this.state.error) {
-                this.props.onChange(value);
-                this.props.onEditingFinished(this.state.error);
-            }
-        }
-    }, {
-        key: "onKeyPressRoutine",
-        value: function onKeyPressRoutine(e) {
-            var keyCode = e.nativeEvent.keyCode;
-            if (keyCode === 13) {
-                this.finish(this.state.value);
-            }
-        }
-    }, {
-        key: "onKeyDownRoutine",
-        value: function onKeyDownRoutine(e) {
-            var keyCode = e.nativeEvent.keyCode;
-            if (keyCode == 27) {
-                this.setState(this.getStateFromValues(this.state.initialValue, this.state.initialValue, this.props.mandatory));
-                this.props.onChange(this.state.initialValue);
-                this.props.onEditingFinished(this.getIsError(this.state.initialValue, this.props.mandatory));
-            }
-        }
+
+        // onBlurRoutine(event) {
+        //     this.finish(this.state.value);
+        // }
+
+        // finish(value) {
+        //     this.props.onChange(value);
+        //     this.props.onEditingFinished(this.state.error);
+        // }
+
+        // onKeyPressRoutine(e) {
+        //     let keyCode = e.nativeEvent.keyCode;
+        //     if (keyCode === 13) {
+        //         this.finish(this.state.value);
+        //     }
+        // }
+
+        // onKeyDownRoutine(e) {
+        //     let keyCode = e.nativeEvent.keyCode;
+        //     if(keyCode == 27) {
+        //         this.setState(this.getStateFromValues(this.state.initialValue, this.state.initialValue, this.props.mandatory));
+        //         this.finish(this.state.initialValue);
+        //         // this.props.onEditingFinished(this.getIsError(this.state.initialValue, this.props.mandatory));
+        //     }
+        // }
+
     }]);
 
     return TextBox;
@@ -43601,7 +43616,7 @@ TextBox.propTypes = {
 
 exports.default = TextBox;
 
-},{"../parsers":191,"./status-icon":188,"react":176,"react-dom":7}],191:[function(require,module,exports){
+},{"../parsers":192,"./mixin/mixEventMethods":186,"./status-icon":189,"react":176,"react-dom":7}],192:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
