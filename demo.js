@@ -63,7 +63,10 @@ var widget = (<form className="form">
                 <input.TextBox valueParser={parsers.trim} {...formData.field("nonMandatoryTextbox", false)} />
             </FormGroup>
 			<FormGroup label="text box with email demo">
-				<input.TextBox valueParser={parsers.email} {...formData.field("textboxWithEmail", true)} />
+				<input.TextBox valueParser={parsers.email} {...formData.field("textboxWithEmail", false)} 
+                    onChange={(value, rawValue)=>{
+                        console.log("email textbox changed. Value: %s, rawValue: %s", value, rawValue);
+                    }}/>
 			</FormGroup>
 			<FormGroup label="text area demo">
 				<input.TextArea valueParser={parsers.raw} {...formData.field("texarea", true)}  rows={4} />

@@ -9,12 +9,18 @@ function FormData(value = {}, changeListener = (newValue, changedFieldName)=>{})
     this.__changeListener = changeListener;
     this.__mandatoryFields = [];
     this.__allFields = [];
+    this.__changedFieldsWitErrors = [];
 
     /**
      * returns change handler that wil update current value
      */
-    this.changeHandler = function(fieldName) {
-        return function(newFieldValue){
+    this.__changeHandler = function(fieldName) {
+        return function(error, newFieldValue){
+            if (error) {
+                this.__changedFieldsWitErrors.push(fieldName);
+            }else {
+                this.__changedFieldsWitErrors = this.__changedFieldsWitErrors.filter((f)=>f != fieldName);
+            }
             this.updateValue(fieldName, newFieldValue);
         }.bind(this);
     };
@@ -24,7 +30,6 @@ function FormData(value = {}, changeListener = (newValue, changedFieldName)=>{})
      */
     this.updateValue = function(fieldName, newFieldValue) {
         if (this.__value[fieldName] != newFieldValue) {
-            // console.log("Updating value of field: " + fieldName + " to: ", newFieldValue);
             this.__value[fieldName] = newFieldValue;
             this.__changeListener(this.__value, fieldName);
         }
@@ -44,7 +49,7 @@ function FormData(value = {}, changeListener = (newValue, changedFieldName)=>{})
         this.__allFields.push(fieldName);
 
         return {
-            onChange: this.changeHandler(fieldName),
+            onEditingFinished: this.__changeHandler(fieldName),
             value: this.__value[fieldName],
             mandatory: mandatory
         };
@@ -56,9 +61,9 @@ function FormData(value = {}, changeListener = (newValue, changedFieldName)=>{})
      * Returned value will contain only fields declared in form!
      */
     this.getValue = function() {
+        if (this.__changedFieldsWitErrors.length > 0) return null;
         for (let i=0; i<this.__mandatoryFields.length; i++) {
             if (!this.__value[this.__mandatoryFields[i]]) {
-                // console.log("value for mandatory field %s not found", this.mandatoryFields[i]);
                 return null;
             };
         }

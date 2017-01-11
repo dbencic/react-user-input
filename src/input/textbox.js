@@ -3,12 +3,14 @@ import ReactDOM from "react-dom";
 import StatusIcon from "./status-icon";
 import parsers from "../parsers";
 import mixEventMethods from "./mixin/mixEventMethods";
+import mixCommonMethods from "./mixin/mixCommonMethods";
 
 class TextBox extends Component {
 
     constructor(props) {
         super(props);
         mixEventMethods(this);
+        mixCommonMethods(this);
         this.state = this.getStateFromProps(props);
     }
 
@@ -16,9 +18,9 @@ class TextBox extends Component {
         this.setState(this.getStateFromProps(props));
     }
 
-    getIsError(value, mandatory) {
-        return parsers.haveParsingFailed(value) || (!value && mandatory);
-    }
+    // getIsError(value, mandatory) {
+    //     return parsers.haveParsingFailed(value) || (!value && mandatory);
+    // }
 
     getStateFromValues(rawValue, value, mandatory) {
         return {
@@ -79,46 +81,8 @@ class TextBox extends Component {
     }
 
     componentDidUpdate() {
-        ReactDOM.findDOMNode(this.refs.input).focus();
+        //ReactDOM.findDOMNode(this.refs.input).focus();
     }
-
-    /**
-     * handles change over state, not directly. This is prefered react way
-     */
-    onChangeRoutine(event) {
-        let rawValue = event.target.value;
-        let value = this.parseValue(rawValue);
-        this.setState({
-            rawValue: rawValue,
-            value: value,
-            error: this.getIsError(value, this.props.mandatory)
-        });
-    }
-
-    // onBlurRoutine(event) {
-    //     this.finish(this.state.value);
-    // }
-
-    // finish(value) {
-    //     this.props.onChange(value);
-    //     this.props.onEditingFinished(this.state.error);
-    // }
-
-    // onKeyPressRoutine(e) {
-    //     let keyCode = e.nativeEvent.keyCode;
-    //     if (keyCode === 13) {
-    //         this.finish(this.state.value);
-    //     }
-    // }
-
-    // onKeyDownRoutine(e) {
-    //     let keyCode = e.nativeEvent.keyCode;
-    //     if(keyCode == 27) {
-    //         this.setState(this.getStateFromValues(this.state.initialValue, this.state.initialValue, this.props.mandatory));
-    //         this.finish(this.state.initialValue);
-    //         // this.props.onEditingFinished(this.getIsError(this.state.initialValue, this.props.mandatory));
-    //     }
-    // }
 
 }
 

@@ -6,12 +6,14 @@ import moment from "moment";
 import parsers from "../parsers";
 import _ from "lodash";
 import mixEventMethods from "./mixin/mixEventMethods";
+import mixCommonMethods from "./mixin/mixCommonMethods";
 
 class DatePickerInput extends Component {
 
     constructor(props) {
         super(props);
         mixEventMethods(this, ["onBlurRoutine", "finish"]);
+        mixCommonMethods(this);
         this.state = this.getStateFromProps(props);
     }
 
@@ -25,10 +27,6 @@ class DatePickerInput extends Component {
             return value;
         }
         return new moment(value);
-    }
-
-    getIsError(value, mandatory) {
-        return parsers.haveParsingFailed(value) || (!value && mandatory);
     }
 
     getStateFromValues(value, mandatory) {
@@ -82,7 +80,7 @@ class DatePickerInput extends Component {
     }
 
     componentDidUpdate() {
-        ReactDOM.findDOMNode(this.refs.input).focus();
+        // ReactDOM.findDOMNode(this.refs.input).focus();
     }
 
     /**
@@ -93,16 +91,8 @@ class DatePickerInput extends Component {
             value: value,
             error: this.getIsError(value, this.props.mandatory)
         });
+        this.props.onChange(value, value);
     }
-
-    // onBlurRoutine(event) {
-    //     this.finish(this.state.value);
-    // }
-
-    // finish(value) {
-    //     this.props.onChange(value);
-    //     this.props.onEditingFinished(this.state.error);
-    // }
 }
 
 DatePickerInput.defaultProps = {
