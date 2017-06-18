@@ -29,4 +29,4 @@ var widget = <FormGroup label="Select box demo">
 React.render(widget, document.getElementById("container"));
 ```
 
-For sample code take a look at <a href="demo.js">Demo sample</a></p>. 
+For sample code take a look at <a href="https://github.com/dbencic/react-user-input/blob/master/demo.js">Demo sample</a></p>. 

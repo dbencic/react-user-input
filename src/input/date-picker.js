@@ -58,7 +58,7 @@ class DatePickerInput extends Component {
         var disabled = (this.props.disabled)?{disabled: true}:{};
         return (<div className="input-group">
                 <DatePicker selected={this.state.value} onChange={(value)=>this.onChangeRoutine(value)}
-                    dateFormat="DD.MM.YYYY" ref="input" selected={this.state.value}
+                    dateFormat="DD.MM.YYYY" ref="input" locale="hr"
                     className={this.getInputClassName()} onBlur={(e)=>this.onBlurRoutine(e)} {...disabled}/>
                     <div className="formy-addon input-group-addon">
                         <StatusIcon error={this.state.error} onClicked={()=>this.onStatusIconClicked()}
